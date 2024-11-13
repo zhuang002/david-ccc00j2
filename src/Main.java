@@ -1,8 +1,10 @@
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
 
-	static int[] dic = new int[10];
+	static HashMap<Integer, Integer> dic = new HashMap<>();
+	
 	public static void main(String[] args) {
 		//using array for dictionary and using string for data;
 		intializeDictionary();
@@ -15,44 +17,42 @@ public class Main {
 		for (int n=min;n<=max;n++) {
 			if (isRotatable(n)) {
 				count++;
-				System.out.println(n);
 			}
 		}
 		System.out.println(count);
 	}
 
 	private static void intializeDictionary() {
-		// TODO Auto-generated method stub
-		for (int i=0;i<10;i++) {
-			dic[i] = -1;
-		}
-		
-		dic[0] = 0;
-		dic[1] = 1;
-		dic[6] = 9;
-		dic[8] = 8;
-		dic[9] = 6;
+		dic.put(0,0);
+		dic.put(1, 1);
+		dic.put(6, 9);
+		dic.put(8, 8);
+		dic.put(9, 6);
 	}
 
 	private static boolean isRotatable(int n) {
-		// using string to identify;
-		String original = Integer.toString(n);
-		String rotated = "";
-		for (int i=0;i<original.length();i++) {
-			char c = original.charAt(i);
-			int digit = c - '0';
-			int rotatedDigit = dic[digit];
-			
-			if (rotatedDigit == -1) {
-				return false;
+		// using digits of n directly.
+
+		int rotated = rotate(n);
+		return rotated == n; 
+	}
+	
+
+	private static int rotate(int n) {
+		/*128 ->8, 12 -> 2, 1 -> 1, 0
+		-》(0+8)*10 = 80 -> (80+2)*10 = 820 -> (820+1) - 821 */
+		
+		int rotated = 0;
+		while (n>0) {
+			int lastDigit = n % 10;
+			n = n /10;
+			if (!dic.containsKey(lastDigit)) {
+				return -1;
 			}
-			
-			char rotatedChar = (char)('0' + rotatedDigit);
-			rotated = rotatedChar + rotated;
+			rotated = rotated*10 + dic.get(lastDigit);
 		}
 		
-		return rotated.equals(original);
-		
+		return rotated;
 	}
 
 }
